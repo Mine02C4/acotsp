@@ -38,9 +38,9 @@ SMPI_LDFLAGS = -L$(SIMGRID_PATH)/lib -lsimgrid -lm
 SMPI_INCLUDE = -I$(SIMGRID_PATH)/include/smpi
 
 S_XMLS := $(wildcard cases/link_*.xml)
-S_LOGS4 := $(patsubst cases/%.xml,cases/%_core_4.log,$(S_XMLS))
+S_LOGS4 := $(patsubst cases/%.xml,cases/%_core4.log,$(S_XMLS))
 S_LOGS16 := $(patsubst cases/%.xml,cases/%_core16.log,$(S_XMLS))
-S_LOGS := $(S_LOGS4)
+S_LOGS := $(S_LOGS4) $(S_LOGS16)
 
 simgrid: acotsp_simgrid.out
 
