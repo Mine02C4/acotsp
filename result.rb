@@ -17,10 +17,10 @@ def main
       File.open(logname, "r") do |f|
         f.each_line do |line|
           if line.include?("Simulated time:")
-            stime = /([0-9\.]+) seconds/.match(line)[1]
+            stime = /(\S+) seconds/.match(line)[1]
           end
           if line.include?("seconds were actual computation of the application")
-            atime = /([0-9\.]+) seconds/.match(line)[1]
+            atime = /(\S+) seconds/.match(line)[1]
           end
         end
       end
