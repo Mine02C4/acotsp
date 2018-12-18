@@ -1,0 +1,30 @@
+[0.000000] [xbt_cfg/INFO] Configuration change: Set 'surf/precision' to '1e-9'
+[0.000000] [xbt_cfg/INFO] Configuration change: Set 'network/model' to 'SMPI'
+[0.000000] [xbt_cfg/INFO] Configuration change: Set 'network/TCP_gamma' to '4194304'
+[0.000000] [xbt_cfg/INFO] Configuration change: Set 'smpi/privatize_global_variables' to 'yes'
+[0.000000] [xbt_cfg/INFO] Configuration change: Set 'cpu/optim' to 'Lazy'
+[0.000000] [xbt_cfg/INFO] Configuration change: Set 'maxmin/precision' to '1e-4'
+[0.000000] [xbt_cfg/INFO] Configuration change: Set 'smpi/coll_selector' to 'mvapich2'
+[0.000000] [xbt_cfg/INFO] Configuration change: Set 'smpi/cpu_threshold' to '0.00000001'
+[0.000000] [xbt_cfg/INFO] Configuration change: Set 'smpi/running_power' to '50000000000.0'
+[0.000000] [xbt_cfg/INFO] Configuration change: Set 'network/optim' to 'Lazy'
+[0.000000] [xbt_cfg/INFO] Configuration change: Set 'smpi/display_timing' to '1'
+[0.000000] [surf_parse/INFO] The custom configuration 'network/model' is already defined by user!
+[0.000000] [surf_config/INFO] Switching workstation model to compound since you changed the network and/or cpu model(s)
+Cities: 100
+Processes: 4
+Ants: 100
+Alpha: 1.00
+Beta: 2.00
+Rho: 0.20
+Q: 80
+
+Best Distance So Far: 5456.544110502569310
+Best Distance So Far: 5456.544110502569310
+Best Distance So Far: 5456.544110502569310
+Best Distance So Far: 5309.059912699664892
+Best Distance So Far: 5254.032017986020037
+Final Distance (0.000020051396301): 5254.032017986020037
+[0.000022] [smpi_kernel/INFO] Simulated time: 2.24696e-05 seconds. 
+ The simulation took 191.391 seconds (after parsing and platform setup)
+66.6859 seconds were actual computation of the application
