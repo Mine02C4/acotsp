@@ -13,7 +13,7 @@ start:
 	docker run --name $(IMAGE_NAME) -it --rm $(IMAGE_NAME)
 
 bash:
-	docker exec -it $(IMAGE_NAME) bash
+	docker run --name $(IMAGE_NAME) -it --rm --entrypoint="bash" $(IMAGE_NAME)
 
 # Inside Docker
 OMPI_CC := mpicc
@@ -30,12 +30,12 @@ acotsp.out: acotsp.c acotsp.h
 	$(OMPI_CC) -o $@ $< $(OMPI_CFLAGS) $(OMPI_LDFLAGS)
 
 # For simgrid
-MPIENVPREFIX=~/approx-sim/MpiEnv
-SIMGRID_PATH := ${MPIENVPREFIX}/simgrid/inst
-SMPI_CC := ${SIMGRID_PATH}/bin/smpicc
-SMPI_RUN := ${SIMGRID_PATH}/bin/smpirun
+SIMGRID_PATH := ~/approx-sim/MpiEnv/simgrid/inst
+export PATH := $(SIMGRID_PATH)/bin:$(PATH)
+SMPI_CC := smpicc
+SMPI_RUN := smpirun
 SMPI_LDFLAGS = -L$(SIMGRID_PATH)/lib -lsimgrid -lm
-SMPI_INCLUDE = -I${SIMGRID_PATH}/include/smpi
+SMPI_INCLUDE = -I$(SIMGRID_PATH)/include/smpi
 
 S_XMLS := $(wildcard cases/*.xml)
 S_LOGS := $(patsubst %.xml,%.log,$(S_XMLS))
