@@ -37,8 +37,10 @@ SMPI_RUN := smpirun
 SMPI_LDFLAGS = -L$(SIMGRID_PATH)/lib -lsimgrid -lm
 SMPI_INCLUDE = -I$(SIMGRID_PATH)/include/smpi
 
-S_XMLS := $(wildcard cases/*.xml)
-S_LOGS := $(patsubst %.xml,%.log,$(S_XMLS))
+S_XMLS := $(wildcard cases/link_*.xml)
+S_LOGS4 := $(patsubst cases/%.xml,cases/%_core_4.log,$(S_XMLS))
+S_LOGS16 := $(patsubst cases/%.xml,cases/%_core16.log,$(S_XMLS))
+S_LOGS := $(S_LOGS4)
 
 simgrid: acotsp_simgrid.out
 
@@ -53,12 +55,17 @@ run_simgrid2: acotsp_simgrid.out
 acotsp_simgrid.out: acotsp.c acotsp.h
 	$(SMPI_CC) -o $@ $< $(SMPI_INCLUDE) $(SMPI_LDFLAGS)
 
-cases/%.log: cases/%.xml acotsp_simgrid.out
+cases/%_core4.log: cases/%.xml acotsp_simgrid.out
 	$(SMPI_RUN) -np 4 --cfg=smpi/privatize_global_variables:yes \
 		-platform $< \
 		-hostfile cases/base.txt \
 		./acotsp_simgrid.out cities.txt 2>&1 | tee $@
 
+cases/%_core16.log: cases/%.xml acotsp_simgrid.out
+	$(SMPI_RUN) -np 16 --cfg=smpi/privatize_global_variables:yes \
+		-platform $< \
+		-hostfile cases/base.txt \
+		./acotsp_simgrid.out cities.txt 2>&1 | tee $@
 
 clean:
 	-$(RM) acotsp_simgrid.out acotsp.out

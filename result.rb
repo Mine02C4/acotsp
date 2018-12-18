@@ -7,11 +7,12 @@ OUTPUT_DIR = "cases"
 def main
   lognames = Dir.glob(OUTPUT_DIR + "/link*.log")
   CSV.open("result.csv", "wb") do |csv|
-    csv << ["bandwidth", "latency", "stime", "atime"]
+    csv << ["bandwidth", "latency", "core", "stime", "atime"]
     lognames.each do |logname|
       s = File.basename(logname, ".*").split("_")
       band = s[1]
       latency = s[2]
+      core = /core([0-9]+)/.match(s[3])[1]
       stime = 0
       atime = 0
       File.open(logname, "r") do |f|
@@ -24,7 +25,7 @@ def main
           end
         end
       end
-      csv << [band, latency, stime, atime]
+      csv << [band, latency, core, stime, atime]
     end
   end
 end
