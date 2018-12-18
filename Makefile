@@ -31,7 +31,7 @@ acotsp.out: acotsp.c acotsp.h
 
 # For simgrid
 SIMGRID_PATH := ~/approx-sim/MpiEnv/simgrid/inst
-export PATH := $(SIMGRID_PATH)/bin:$(PATH)
+#export PATH := $(SIMGRID_PATH)/bin:$(PATH)
 SMPI_CC := smpicc
 SMPI_RUN := smpirun
 SMPI_LDFLAGS = -L$(SIMGRID_PATH)/lib -lsimgrid -lm

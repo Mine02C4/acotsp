@@ -5,8 +5,8 @@ require 'rexml/document'
 OUTPUT_DIR = "cases"
 BASE_XML = "cases/base.xml"
 
-LINK_BANDWIDTH_LIST = ["1.0e+16", "1.0e+9", "1.0e+10"]
-LINK_LATENCY_LIST = ["2.0e-07", "0.001", "0.1"]
+LINK_BANDWIDTH_LIST = ["1.0e+16", "1.0e+10", "1.0e+9", "1.0e+8"]
+LINK_LATENCY_LIST = ["2.0e-07", "0.0001" , "0.001", "0.01", "0.1"]
 
 def main
   # Prepare Output directory

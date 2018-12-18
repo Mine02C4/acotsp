@@ -19,12 +19,12 @@ Beta: 2.00
 Rho: 0.20
 Q: 80
 
-Best Distance So Far: 5543.992986833478426
-Best Distance So Far: 5493.479056383803254
-Best Distance So Far: 5493.479056383803254
-Best Distance So Far: 5493.479056383803254
-Best Distance So Far: 5493.479056383803254
-Final Distance (7.654825309402503): 5493.479056383803254
-[8.863628] [smpi_kernel/INFO] Simulated time: 8.86363 seconds. 
- The simulation took 304.103 seconds (after parsing and platform setup)
-100.545 seconds were actual computation of the application
+Best Distance So Far: 5558.834918190927056
+Best Distance So Far: 5249.402186179492674
+Best Distance So Far: 5249.402186179492674
+Best Distance So Far: 5249.402186179492674
+Best Distance So Far: 4997.754929288266794
+Final Distance (0.000166593935294): 4997.754929288266794
+[0.000169] [smpi_kernel/INFO] Simulated time: 0.000169072 seconds. 
+ The simulation took 303.514 seconds (after parsing and platform setup)
+99.3611 seconds were actual computation of the application

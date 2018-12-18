@@ -22,9 +22,9 @@ Q: 80
 Best Distance So Far: 5395.029432487594022
 Best Distance So Far: 5315.650896870712131
 Best Distance So Far: 5315.650896870712131
-Best Distance So Far: 4944.184808619713294
-Best Distance So Far: 4944.184808619713294
-Final Distance (0.076552193623248): 4944.184808619713294
-[0.088640] [smpi_kernel/INFO] Simulated time: 0.0886402 seconds. 
- The simulation took 239.837 seconds (after parsing and platform setup)
-81.4611 seconds were actual computation of the application
+Best Distance So Far: 5315.650896870712131
+Best Distance So Far: 5315.650896870712131
+Final Distance (0.076553075361642): 5315.650896870712131
+[0.088641] [smpi_kernel/INFO] Simulated time: 0.0886411 seconds. 
+ The simulation took 300.671 seconds (after parsing and platform setup)
+100.561 seconds were actual computation of the application
