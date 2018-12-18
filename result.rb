@@ -9,7 +9,7 @@ def main
   CSV.open("result.csv", "wb") do |csv|
     csv << ["bandwidth", "latency", "stime", "atime"]
     lognames.each do |logname|
-      s = logname.split("_")
+      s = File.basename(logname, ".*").split("_")
       band = s[1]
       latency = s[2]
       stime = 0
