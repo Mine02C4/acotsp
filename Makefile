@@ -13,6 +13,9 @@ start:
 	docker run --name $(IMAGE_NAME) -it --rm $(IMAGE_NAME)
 
 bash:
+	docker run --name $(IMAGE_NAME) -it --rm --entrypoint="bash" $(IMAGE_NAME)
+
+in_bash:
 	docker exec -it $(IMAGE_NAME) bash
 
 .PHONY: build rebuild start bash
@@ -20,8 +23,8 @@ bash:
 # Inside Docker
 OMPI_CC := mpicc
 OMPI_CXX := mpic++
-CFLAGS := -Wall -O2
-LDFLAGS := -lm
+OMPI_CFLAGS := -Wall -O2
+OMPI_LDFLAGS := -lm
 
 all: acotsp.out
 
@@ -29,5 +32,5 @@ run: all
 	mpirun -np 4 --allow-run-as-root ./acotsp.out cities.txt
 
 acotsp.out: acotsp.c acotsp.h
-	$(OMPI_CC) $(CFLAGS) $(LDFLAGS) -o $@ $<
+	$(OMPI_CC) -o $@ $< $(OMPI_CFLAGS) $(OMPI_LDFLAGS)
 
