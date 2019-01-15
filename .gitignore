@@ -6,5 +6,10 @@
 .sw[op]
 *.bak
 
+
+# Dependency files
+*.d
+
+# Compile output
 *.out
 

@@ -21,16 +21,27 @@ in_bash:
 .PHONY: build rebuild start bash
 
 # Inside Docker
+CC := gcc
+CFLAGS := -Wall -O2
+
 OMPI_CC := mpicc
 OMPI_CXX := mpic++
 OMPI_CFLAGS := -Wall -O2
 OMPI_LDFLAGS := -lm
+
+SRCS := $(wildcard *.c)
+DEPS := $(patsubst %.c,%.d, $(OBJS))
 
 all: acotsp.out
 
 run: all
 	mpirun -np 4 --allow-run-as-root ./acotsp.out cities.txt
 
-acotsp.out: acotsp.c acotsp.h
-	$(OMPI_CC) -o $@ $< $(OMPI_CFLAGS) $(OMPI_LDFLAGS)
+acotsp.out: acotsp.c
+	$(OMPI_CC) -o "$@" -MMD -MP -MT "$@" -MF "$(patsubst %.c,%.d, $<)" $< $(OMPI_CFLAGS) $(OMPI_LDFLAGS)
+
+citygen.out: citygen.c
+	$(CC) -o "$@" -MMD -MP -MT "$@" -MF "$(patsubst %.c,%.d, $<)" $< $(CFLAGS)
+
+-include $(DEPS)
 
