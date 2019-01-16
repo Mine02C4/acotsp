@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
 	
 	// Broadcast the cities to all processes
 	MPI_Type_contiguous(2, MPI_INT, &MPI_CITY);
+	MPI_Type_set_name(MPI_CITY, "MPI_CITY");
 	MPI_Type_commit(&MPI_CITY);
 	MPI_Bcast(city, NUM_CITIES, MPI_CITY, 0, MPI_COMM_WORLD);
 	
@@ -41,6 +42,8 @@ int main(int argc, char *argv[])
 	
 	// Build the derived data type for communication of the best tour
 	ACO_Build_best(&best, &MPI_BEST);
+	MPI_Type_set_name(MPI_BEST, "MPI_BEST");
+	MPI_Type_commit(&MPI_BEST);
 	for(i=0; i<NUM_COMMS; i++) {
 		for(j=0; j<NUM_TOURS*NUM_CITIES; j++) {
 			ACO_Step_ants();
