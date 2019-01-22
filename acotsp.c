@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
 	int i, j, k, max_width, max_height, min, num_cities;
 	double start = 0.0, finish = 0.0;
-	MPI_Status status;
+	//MPI_Status status;
 	MPI_Datatype MPI_CITY, MPI_BEST;
 	
 	// Initialize MPI
@@ -436,7 +436,7 @@ double ACO_Distance(int x1, int y1, int x2, int y2)
 */
 void ACO_Export_processing(int max_width, int max_height)
 {
-	int i, j;
+	int i;
 	printf("\nsize(%d, %d);\nbackground(20);\nstroke(60);\nfill(255);\n", max_width, max_height);
 	for(i=0; i<NUM_CITIES; i++) {
 		if(i<NUM_CITIES-1) printf("line(%d, %d, %d, %d);\n", city[best.path[i]].x, city[best.path[i]].y, city[best.path[i+1]].x, city[best.path[i+1]].y);
