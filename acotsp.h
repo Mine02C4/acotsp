@@ -37,14 +37,16 @@ typedef struct {
 } ACO_City;
 
 typedef struct { 
-	double distance;
 	int path[NUM_CITIES];
 } ACO_Best_tour;
 
 /* (Local) Global Variables */
 ACO_Ant ant[NUM_ANTS];
 ACO_City city[NUM_CITIES];
-ACO_Best_tour best, *all_best;
+ACO_Best_tour best;
+double best_distance;
+ACO_Best_tour *all_best;
+double *all_best_distance;
 double distance[NUM_CITIES][NUM_CITIES], pheromone[NUM_CITIES][NUM_CITIES];
 int rank, procs;
 
@@ -53,7 +55,7 @@ void ACO_Step_ants();
 void ACO_Reset_ants();
 void ACO_Update_pheromone();
 void ACO_Update_best();
-void ACO_Load_cities(char *filename, int *max_width, int *max_height);
+void ACO_Load_cities(char *filename, int max_cities, int *num_cities, int *max_width, int *max_height);
 void ACO_Link_cities();
 int main(int argc, char * argv[]);
 int ACO_Next_city(int ant_index);

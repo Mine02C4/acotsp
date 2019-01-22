@@ -10,7 +10,7 @@
 
 int main(int argc, char *argv[])
 {
-	int i, j, k, max_width, max_height, min;
+	int i, j, k, max_width, max_height, min, num_cities;
 	double start = 0.0, finish = 0.0;
 	MPI_Status status;
 	MPI_Datatype MPI_CITY, MPI_BEST;
@@ -25,9 +25,10 @@ int main(int argc, char *argv[])
 	start = MPI_Wtime();
 	
 	if (!rank) {
-		ACO_Load_cities(argv[1], &max_width, &max_height);
+		ACO_Load_cities(argv[1], NUM_CITIES, &num_cities, &max_width, &max_height);
 		printf("Cities: %d\nProcesses: %d\nAnts: %d\nAlpha: %3.2f\nBeta: %3.2f\nRho: %3.2f\nQ: %d\n\n", NUM_CITIES, procs, NUM_ANTS, ALPHA, BETA, RHO, Q);
-		all_best = (ACO_Best_tour *)malloc(sizeof(ACO_Best_tour)*procs);
+    all_best = (ACO_Best_tour *)malloc(sizeof(ACO_Best_tour) * procs);
+    all_best_distance = (double *)malloc(sizeof(double) * procs);
 	}
 	
 	// Broadcast the cities to all processes
@@ -41,9 +42,7 @@ int main(int argc, char *argv[])
 	ACO_Reset_ants();
 	
 	// Build the derived data type for communication of the best tour
-	ACO_Build_best(&best, &MPI_BEST);
-	MPI_Type_set_name(MPI_BEST, "MPI_BEST");
-	MPI_Type_commit(&MPI_BEST);
+	ACO_Build_best(&best, "MPI_BEST", &MPI_BEST);
 	for(i=0; i<NUM_COMMS; i++) {
 		for(j=0; j<NUM_TOURS*NUM_CITIES; j++) {
 			ACO_Step_ants();
@@ -56,19 +55,20 @@ int main(int argc, char *argv[])
 		
 		// Collect best tours from all processes
 		MPI_Gather(&best, 1, MPI_BEST, all_best, 1, MPI_BEST, 0, MPI_COMM_WORLD);
+		MPI_Gather(&best_distance, 1, MPI_DOUBLE, all_best_distance, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 		if(!rank) {
 			min = 0;
 			for(j=1; j<procs; j++) {
-				if(all_best[j].distance < all_best[min].distance) { 
+				if(all_best_distance[j] < all_best_distance[min]) { 
 					min = j;
 				}
 			}
-			best.distance = all_best[min].distance;
+			best_distance = all_best_distance[min];
 
 			for(j=0; j<NUM_CITIES; j++) {
 				best.path[j] = all_best[min].path[j];
 			}
-			printf("Best Distance So Far: %.15f\n", best.distance);
+			printf("Best Distance So Far: %.15f\n", best_distance);
 			fflush(stdout);
 		}
 		
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 			// Highlight the overall best tour in the pheromone matrix
 			for(j=0; j<NUM_CITIES; j++) {
 				if(j < NUM_CITIES-1) {
-					pheromone[best.path[j]][best.path[j+1]] += Q/best.distance;
+					pheromone[best.path[j]][best.path[j+1]] += Q/best_distance;
 					pheromone[best.path[j+1]][best.path[j]] = pheromone[best.path[j]][best.path[j+1]];
 				}
 			}
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 	MPI_Barrier(MPI_COMM_WORLD);
 	finish = MPI_Wtime();
 	if(!rank) {
-		printf("Final Distance (%.15f): %.15f\n", finish-start, best.distance);
+		printf("Final Distance (%.15f): %.15f\n", finish-start, best_distance);
 		fflush(stdout);
 #ifdef PROCESSING
 		ACO_Export_processing(max_width, max_height);
@@ -120,6 +120,12 @@ int main(int argc, char *argv[])
 		glutMainLoop();
 	}
 #endif
+  if (all_best != NULL) {
+    free(all_best);
+  }
+  if (all_best_distance != NULL) {
+    free(all_best_distance);
+  }
 	return 0;
 }
 
@@ -134,27 +140,26 @@ int main(int argc, char *argv[])
 	
 	@return void
 */
-void ACO_Build_best(ACO_Best_tour *tour, MPI_Datatype *mpi_type /*out*/)
+void ACO_Build_best(ACO_Best_tour *tour, char *type_name, MPI_Datatype *mpi_type /*out*/)
 {
-	int block_lengths[2];
-	MPI_Aint displacements[3];
-	MPI_Datatype typelist[3];
-	MPI_Aint start_address;
-	MPI_Aint address;
+	int block_lengths[1];
+	MPI_Aint displacements[1];
+	MPI_Datatype typelist[1];
+	//MPI_Aint start_address;
+	//MPI_Aint address;
 	
-	block_lengths[0] = 1;
-	block_lengths[1] = NUM_CITIES;
+	block_lengths[0] = NUM_CITIES;
 	
-	typelist[0] = MPI_DOUBLE;
-	typelist[1] = MPI_INT;
+	typelist[0] = MPI_INT;
 	
 	displacements[0] = 0;
 	
-	MPI_Address(&(tour->distance), &start_address);
-	MPI_Address(tour->path, &address);
-	displacements[1] = address - start_address;
+	//MPI_Address(&(tour->distance), &start_address);
+	//MPI_Address(tour->path, &address);
+	//displacements[1] = address - start_address;
 	
-	MPI_Type_struct(2, block_lengths, displacements, typelist, mpi_type);
+	MPI_Type_struct(1, block_lengths, displacements, typelist, mpi_type);
+	MPI_Type_set_name(*mpi_type, type_name);
 	MPI_Type_commit(mpi_type);
 }
 
@@ -282,8 +287,8 @@ void ACO_Update_best()
 	int i, j;
 	
 	for(i=0; i<NUM_ANTS; i++) {
-		if(ant[i].tour_distance < best.distance || best.distance == 0.0) {
-			best.distance = ant[i].tour_distance;
+		if(ant[i].tour_distance < best_distance || best_distance == 0.0) {
+			best_distance = ant[i].tour_distance;
 			for(j=0; j<NUM_CITIES; j++) best.path[j] = ant[i].path[j];
 		}
 	}
@@ -330,6 +335,9 @@ void ACO_Update_pheromone()
 	@param filename
 	Character array for the filename of the city file.
 	
+	@param num_cities
+	Number of cities.
+	
 	@param max_width
 	Maximum width of the points in the file.
 	
@@ -338,17 +346,19 @@ void ACO_Update_pheromone()
 	
 	@return void
 */
-void ACO_Load_cities(char *filename, int *max_width /*out*/, int *max_height /*out*/)
+void ACO_Load_cities(char *filename, int max_cities, int *num_cities, int *max_width, int *max_height)
 {
 	FILE *fp;
 	int i;
-	
 	fp = fopen(filename, "r");
-	fscanf(fp, "%dx%d", max_width, max_height);
-	for(i=0; i<NUM_CITIES; i++) {
-		fscanf(fp, "%d,%d", &city[i].x, &city[i].y);
+	fscanf(fp, "%d %d %d", num_cities, max_width, max_height);
+  if (*num_cities > max_cities) {
+    fprintf(stderr, "Number cities is over max cities.\n");
+    exit(1);
+  }
+	for(i=0; i < *num_cities; i++) {
+		fscanf(fp, "%d %d", &city[i].x, &city[i].y);
 	}
-	
 	fclose(fp);
 }
 
