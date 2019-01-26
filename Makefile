@@ -35,7 +35,7 @@ DEPS := $(patsubst %.c,%.d, $(OBJS))
 all: acotsp.out
 
 run: all
-	mpirun -np 4 --allow-run-as-root ./acotsp.out cities.txt
+	mpirun -np 4 --allow-run-as-root ./acotsp.out cities00.txt
 
 acotsp.out: acotsp.c
 	$(OMPI_CC) -o "$@" -MMD -MP -MT "$@" -MF "$(patsubst %.c,%.d, $<)" $< $(OMPI_CFLAGS) $(OMPI_LDFLAGS)
